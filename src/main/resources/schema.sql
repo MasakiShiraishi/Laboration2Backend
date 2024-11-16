@@ -2,7 +2,7 @@
 
 
 -- Table for storing Kategori
-CREATE TABLE IF NOT EXISTS Category (
+CREATE TABLE IF NOT EXISTS category (
        id BIGINT AUTO_INCREMENT PRIMARY KEY,
        name VARCHAR(100) NOT NULL UNIQUE,
        symbol VARCHAR(50),
@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS Category (
 );
 
 -- Table for storing Plats
-CREATE TABLE IF NOT EXISTS Place (
+CREATE TABLE IF NOT EXISTS place (
        id BIGINT AUTO_INCREMENT PRIMARY KEY,
        name VARCHAR(255) NOT NULL,
        category_id BIGINT,
@@ -23,5 +23,5 @@ CREATE TABLE IF NOT EXISTS Place (
        created_time DATETIME DEFAULT CURRENT_TIMESTAMP,
        deleted BOOLEAN DEFAULT FALSE,
 
-       FOREIGN KEY (category_id) REFERENCES Category(id) ON DELETE SET NULL
+       FOREIGN KEY (category_id) REFERENCES category(id) ON DELETE SET NULL
 );

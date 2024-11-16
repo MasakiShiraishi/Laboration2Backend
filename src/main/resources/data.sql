@@ -1,12 +1,12 @@
 -- Insert initial data into the Kategori table
-INSERT INTO Category (name, symbol, description) VALUES
+INSERT INTO category (name, symbol, description) VALUES
      ('Parks', '🌳', 'Parks and natural areas with greenery'),
      ('Restaurants', '🍴', 'Places to enjoy food and beverages'),
      ('Shopping', '🛍️', 'Malls and shopping stores'),
      ('Cultural Sites', '🏛️', 'Museums, galleries, and historical sites');
 
 -- Insert initial data into the Plats table
-INSERT INTO Place (name, category_id, user_id, public_status, description, latitude, longitude) VALUES
+INSERT INTO place (name, category_id, user_id, public_status, description, latitude, longitude) VALUES
      ('Central Park', 1, 101, TRUE, 'A large public park located in the city center', 40.785091, -73.968285),
      ('Sagrada Familia', 4, 102, TRUE, 'A world heritage site and an iconic church', 41.403629, 2.174356),
      ('Shibuya Mall', 3, 103, TRUE, 'A popular mall for shopping and dining', 35.659466, 139.700551),
