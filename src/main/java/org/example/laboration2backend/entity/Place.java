@@ -18,7 +18,7 @@ public class Place {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Long id;
+    private Integer id;
 
     @Size(max = 255)
     @NotNull
@@ -32,7 +32,7 @@ public class Place {
 
     @NotNull
     @Column(name = "user_id", nullable = false)
-    private Long userId;
+    private Integer userId;
 
     @ColumnDefault("1")
     @Column(name = "public_status")
@@ -62,11 +62,11 @@ public class Place {
     @Column(name = "deleted")
     private Boolean deleted;
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -86,11 +86,11 @@ public class Place {
         this.category = category;
     }
 
-    public Long getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
