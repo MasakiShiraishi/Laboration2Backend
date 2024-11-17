@@ -14,17 +14,6 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
-//    public List<Category> allCategories() {
-//        return List.of(
-//                new Category("Park"),
-//                new Category("Restarang")
-//        );
-//    }
-// Get all categories
-//public List<Category> AllCategories() {
-//    return categoryRepository.findAll();
-//}
-
     public List<CategoryDto> allCategories() {
         return categoryRepository.findAll().stream()
                 .map(CategoryDto::fromCategory)
@@ -33,7 +22,6 @@ public class CategoryService {
 
 
     public int addCategory(CategoryDto categoryDto) {
-        System.out.println("Category name: " + categoryDto.name());
         Category category = new Category();
         category.setName(categoryDto.name());
         category.setSymbol(categoryDto.symbol());
