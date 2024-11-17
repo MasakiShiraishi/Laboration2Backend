@@ -9,3 +9,23 @@ Content-Type: application/json
   "symbol": null,
   "description": null
 }
+###
+GET http://localhost:8080/place
+
+###
+POST http://localhost:8080/place
+Content-Type: application/json
+
+{
+"name": "Sushi by Kyoto",
+"categoryId": 2,
+"userId": 104,
+"published": true,
+"lastChange": "2024-11-15T17:35:05Z",
+"description": "A well-known sushi restaurants with amazing sushi",
+"latitude": 59.3445102,
+"longitude": 18.0398688,
+"createdTime": "2024-11-15T17:35:05Z",
+"deleted": false
+}
+###
