@@ -40,4 +40,13 @@ public class PlaceService {
        place = placeRepository.save(place);
        return place.getId();
    }
+
+   public List<Place> getPublicPlaces() {
+       List<Place> places = placeRepository.findByPublicStatus(true);
+       return places;
+   }
+
+   public List<Place> getPublicPlacesByCategory(Integer categoryId) {
+        return placeRepository.findByCategoryIdAndPublicStatus(categoryId, true);
+   }
 }

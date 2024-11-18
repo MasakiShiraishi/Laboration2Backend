@@ -10,8 +10,9 @@ Content-Type: application/json
   "description": null
 }
 ###
+GET http://localhost:8080/category/1
+###
 GET http://localhost:8080/place
-
 ###
 POST http://localhost:8080/place
 Content-Type: application/json

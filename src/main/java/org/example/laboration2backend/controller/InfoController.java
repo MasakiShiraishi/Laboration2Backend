@@ -3,12 +3,10 @@ package org.example.laboration2backend.controller;
 import org.example.laboration2backend.category.CategoryService;
 import org.example.laboration2backend.dto.CategoryDto;
 import org.example.laboration2backend.dto.PlaceDto;
+import org.example.laboration2backend.entity.Place;
 import org.example.laboration2backend.place.PlaceService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
@@ -40,14 +38,26 @@ public class InfoController {
         int id = categoryService.addCategory(categoryDto);
         return ResponseEntity.created(URI.create("/category/" + id)).build();
     }
+
     @GetMapping("/place")
-    public List<PlaceDto> getAllPlaces(){
-        return placeService.allPlaces();
+    public List<Place> publicPlaces(){
+        return placeService.getPublicPlaces();
     }
 
     @PostMapping("/place")
     public ResponseEntity<Void> createPlace(@RequestBody PlaceDto placeDto){
         int id = placeService.addPlace(placeDto);
         return ResponseEntity.created(URI.create("/place/" + id)).build();
+    }
+
+    //Hämta alla publika platser inom en specifik kategori.
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<List<PlaceDto>> getPublicPlacesByCategory(@PathVariable Integer categoryId){
+        List<Place> places = placeService.getPublicPlacesByCategory(categoryId);
+                List<PlaceDto> placeDtos = places.stream()
+                .map(PlaceDto::fromPlace)
+                .toList();
+
+        return ResponseEntity.ok(placeDtos);
     }
 }
