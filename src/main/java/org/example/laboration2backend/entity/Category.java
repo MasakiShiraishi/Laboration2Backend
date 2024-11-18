@@ -1,5 +1,6 @@
 package org.example.laboration2backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -31,6 +32,7 @@ public class Category {
     private String description;
 
     @OneToMany(mappedBy = "category")
+    @JsonBackReference
     private Set<Place> places = new LinkedHashSet<>();
 
     public Set<Place> getPlaces() {
