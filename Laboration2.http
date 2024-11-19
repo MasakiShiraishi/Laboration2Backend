@@ -1,6 +1,7 @@
 ### GET request to example server
 GET http://localhost:8080/category
 ###
+### adminroll
 POST http://localhost:8080/category
 Content-Type: application/json
 
@@ -14,6 +15,7 @@ GET http://localhost:8080/category/1
 ###
 GET http://localhost:8080/place
 ###
+### kräver inloggning).
 POST http://localhost:8080/place
 Content-Type: application/json
 

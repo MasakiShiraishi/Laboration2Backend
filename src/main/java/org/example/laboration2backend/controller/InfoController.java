@@ -36,17 +36,20 @@ public class InfoController {
                return categoryService.allCategories();
     }
 
+    //Skapa en ny kategori (kräver adminroll). Namnet får inte kollidera med en befintlig kategori.
     @PostMapping("/category")
     public ResponseEntity<Void> createCategory(@RequestBody CategoryDto categoryDto){
         int id = categoryService.addCategory(categoryDto);
         return ResponseEntity.created(URI.create("/category/" + id)).build();
     }
 
+    //Hämta alla publika platser eller en specifik publik plats (för anonyma användare).
     @GetMapping("/place")
     public List<Place> publicPlaces(){
         return placeService.getPublicPlaces();
     }
 
+    //Skapa en ny plats (kräver inloggning).
     @PostMapping("/place")
     public ResponseEntity<Void> createPlace(@RequestBody PlaceDto placeDto){
         int id = placeService.addPlace(placeDto);
