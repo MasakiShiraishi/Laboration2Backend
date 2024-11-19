@@ -1,5 +1,6 @@
 package org.example.laboration2backend.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.laboration2backend.category.CategoryService;
 import org.example.laboration2backend.dto.CategoryDto;
 import org.example.laboration2backend.dto.PlaceDto;
@@ -12,6 +13,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
+@Slf4j
 public class InfoController {
 
     PlaceService placeService;
@@ -25,6 +27,7 @@ public class InfoController {
 
     @GetMapping("/")
     public String info(){
+        log.info("testtest");
         return "This is a PlatsController";
     }
 
@@ -57,6 +60,7 @@ public class InfoController {
                 List<PlaceDto> placeDtos = places.stream()
                 .map(PlaceDto::fromPlace)
                 .toList();
+        log.info("getPublicPlacesByCategory method called with categoryId: {}", categoryId);
 
         return ResponseEntity.ok(placeDtos);
     }
