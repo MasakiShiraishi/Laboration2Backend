@@ -25,6 +25,11 @@ public class PlaceService {
    }
 
    public int addPlace(PlaceDto placeDto) {
+       placeRepository.findByName(placeDto.name())
+               .ifPresent(existingPlace -> {
+                   throw new IllegalArgumentException("A place with the name '" + placeDto.name() + "' already exists.");
+               });
+
        Place place = new Place();
        place.setName(placeDto.name());
        Category category = categoryRepository.findById(placeDto.categoryId())
