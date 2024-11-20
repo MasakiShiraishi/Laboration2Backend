@@ -7,9 +7,14 @@ import org.example.laboration2backend.dto.PlaceDto;
 import org.example.laboration2backend.entity.Place;
 import org.example.laboration2backend.place.PlaceService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -66,5 +71,20 @@ public class InfoController {
         log.info("getPublicPlacesByCategory method called with categoryId: {}", categoryId);
 
         return ResponseEntity.ok(placeDtos);
+    }
+    @GetMapping("/api/test")
+    @PreAuthorize("hasAuthority('read:test')")
+    @PostFilter("filterObject.name() == authentication.name")
+    public Collection<Test> test(Principal principal){
+        return new ArrayList(List.of(
+                new Test("A123B","This info belongs to A123B"),
+                new Test("A123B","This info also belongs to A123B"),
+                new Test("AB","This info belongs to AB"),
+                new Test("Test","This info belongs to Test")
+        ));
+    }
+
+    public record Test(String name, String info){
+
     }
 }
