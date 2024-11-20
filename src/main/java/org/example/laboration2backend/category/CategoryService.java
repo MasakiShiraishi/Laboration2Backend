@@ -2,6 +2,7 @@ package org.example.laboration2backend.category;
 
 import org.example.laboration2backend.dto.CategoryDto;
 import org.example.laboration2backend.entity.Category;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class CategoryService {
                 .toList();
     }
 
-
+    @PreAuthorize("hasRole('ADMIN')")
     public int addCategory(CategoryDto categoryDto) {
         Category category = new Category();
         category.setName(categoryDto.name());
