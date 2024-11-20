@@ -1,28 +1,35 @@
 package org.example.laboration2backend.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.laboration2backend.apiauth.ApiKeyAuthService;
 import org.example.laboration2backend.category.CategoryService;
 import org.example.laboration2backend.dto.CategoryDto;
 import org.example.laboration2backend.dto.PlaceDto;
+import org.example.laboration2backend.entity.ApiKey;
 import org.example.laboration2backend.entity.Place;
 import org.example.laboration2backend.place.PlaceService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.Collection;
 import java.util.List;
 
 @RestController
 @Slf4j
 public class InfoController {
 
+    private final ApiKeyAuthService apiKeyAuthService;
     PlaceService placeService;
     CategoryService categoryService;
 
-    public InfoController(CategoryService categoryService, PlaceService placeService){
+    public InfoController(CategoryService categoryService, PlaceService placeService, ApiKeyAuthService apiKeyAuthService){
 
         this.categoryService = categoryService;
         this.placeService = placeService;
+        this.apiKeyAuthService = apiKeyAuthService;
     }
 
     @GetMapping("/")
@@ -66,5 +73,10 @@ public class InfoController {
         log.info("getPublicPlacesByCategory method called with categoryId: {}", categoryId);
 
         return ResponseEntity.ok(placeDtos);
+    }
+    @GetMapping("/api/test")
+    @PreAuthorize("hasAuthority('read:test')")
+    public Collection<ApiKey> test(){
+         return apiKeyAuthService.getMyApiKeys();
     }
 }
