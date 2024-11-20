@@ -1,9 +1,11 @@
 package org.example.laboration2backend.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.laboration2backend.apiauth.ApiKeyAuthService;
 import org.example.laboration2backend.category.CategoryService;
 import org.example.laboration2backend.dto.CategoryDto;
 import org.example.laboration2backend.dto.PlaceDto;
+import org.example.laboration2backend.entity.ApiKey;
 import org.example.laboration2backend.entity.Place;
 import org.example.laboration2backend.place.PlaceService;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +14,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.security.Principal;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -21,13 +21,15 @@ import java.util.List;
 @Slf4j
 public class InfoController {
 
+    private final ApiKeyAuthService apiKeyAuthService;
     PlaceService placeService;
     CategoryService categoryService;
 
-    public InfoController(CategoryService categoryService, PlaceService placeService){
+    public InfoController(CategoryService categoryService, PlaceService placeService, ApiKeyAuthService apiKeyAuthService){
 
         this.categoryService = categoryService;
         this.placeService = placeService;
+        this.apiKeyAuthService = apiKeyAuthService;
     }
 
     @GetMapping("/")
@@ -74,17 +76,7 @@ public class InfoController {
     }
     @GetMapping("/api/test")
     @PreAuthorize("hasAuthority('read:test')")
-    @PostFilter("filterObject.name() == authentication.name")
-    public Collection<Test> test(Principal principal){
-        return new ArrayList(List.of(
-                new Test("A123B","This info belongs to A123B"),
-                new Test("A123B","This info also belongs to A123B"),
-                new Test("AB","This info belongs to AB"),
-                new Test("Test","This info belongs to Test")
-        ));
-    }
-
-    public record Test(String name, String info){
-
+    public Collection<ApiKey> test(){
+         return apiKeyAuthService.getMyApiKeys();
     }
 }

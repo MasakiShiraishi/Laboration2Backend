@@ -15,3 +15,11 @@ INSERT INTO place (name, category_id, user_id, public_status, description, latit
      ('Louvre Museum', 4, 105, TRUE, 'The historic museum housing the Mona Lisa', 48.860611, 2.337644),
      ('Italian Pizzeria', 2, 102, TRUE, 'An authentic Italian restaurant', 41.902782, 12.496366),
      ('Outlet Mall', 3, 103, FALSE, 'A mall offering discounted brand items', 34.693738, 135.502165);
+
+-- Insert sample data into api_key table
+INSERT INTO api_key (api_key, name, valid_until)
+VALUES ('wEWM967DqqC9cBMGpxvr99GM', 'Service A', '2024-12-31 23:59:59'),
+       ('xYz12345AbCdEfGhIjKlMnOp', 'Service B', '2025-06-30 23:59:59'),
+       ('aBcDeFgHiJkLmNoPqRsTuVwX', 'Service A', '2024-12-31 23:59:59'),
+       ('LmNoPqRsTuVwXyZaBcDeFgHi', 'Service C', '2025-01-15 23:59:59'),
+       ('QrStUvWxYzAbCdEfGhIjKlMn', 'Service B', '2025-06-30 23:59:59');

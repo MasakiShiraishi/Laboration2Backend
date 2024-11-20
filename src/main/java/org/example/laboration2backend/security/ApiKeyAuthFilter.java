@@ -48,18 +48,13 @@ public class ApiKeyAuthFilter extends GenericFilterBean {
 
     public Authentication getAuthentication(HttpServletRequest request) {
         String apiKey = request.getHeader(AUTH_TOKEN_HEADER_NAME);
-//        var name = apiKeyAuthService.isValidApiKey(apiKey);
-//        if (name.isEmpty()) {
-//            throw new BadCredentialsException("Invalid API Key");
-//        }
-//        return new ApiKeyAuthentication(name.get(), AuthorityUtils.createAuthorityList("read:test","read:test"));
-//    }
-
-        if (apiKey == null ||!apiKeyAuthService.isValidApiKey(apiKey)) {
+        var name = apiKeyAuthService.isValidApiKey(apiKey);
+        if (name.isEmpty()) {
             throw new BadCredentialsException("Invalid API Key");
         }
-        return new ApiKeyAuthentication(apiKey, AuthorityUtils.createAuthorityList("read:test"));
+        return new ApiKeyAuthentication(name.get(), AuthorityUtils.createAuthorityList("read:test","read:test"));
     }
+
 }
 
 
