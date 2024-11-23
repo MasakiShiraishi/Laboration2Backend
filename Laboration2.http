@@ -1,4 +1,5 @@
 ### GET request to example server
+### 1. Kategorier
 GET http://localhost:8080/category
 ###
 ### adminroll
@@ -11,9 +12,15 @@ Content-Type: application/json
   "description": null
 }
 ###
+### 2.Platser
+###
+###(för anonyma användare).
+GET http://localhost:8080/place
+###
 GET http://localhost:8080/category/1
 ###
-GET http://localhost:8080/place
+### inloggade användaren
+GET http://localhost:8080//places/user
 ###
 ### kräver inloggning).
 POST http://localhost:8080/place

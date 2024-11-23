@@ -45,6 +45,8 @@ public class Security {
                                 .requestMatchers(GET, "/category/**").permitAll()
                                 .requestMatchers(POST, "/category").hasRole("ADMIN")
                                 .requestMatchers(GET, "/place").permitAll()
+                                .requestMatchers(GET, "/places/**").hasAnyRole("USER101","USER102", "USER103","USER104","USER105")
+                                .requestMatchers(GET, "/test/**").permitAll()
                                 .requestMatchers(POST, "/place/**").authenticated()
                                 .anyRequest().denyAll())
                 .sessionManagement(session ->
@@ -58,13 +60,40 @@ public class Security {
     @Bean
     public UserDetailsService users() {
         PasswordEncoder encoder = passwordEncoder();
+        UserDetails user101 = User.builder()
+                .username("user101")
+                .password(encoder.encode("password"))
+                .roles("USER101")
+                .build();
+        UserDetails user102 = User.builder()
+                .username("user102")
+                .password(encoder.encode("password"))
+                .roles("USER102")
+                .build();
+
+        UserDetails user103 = User.builder()
+                .username("user103")
+                .password(encoder.encode("password"))
+                .roles("USER103")
+                .build();
+
+        UserDetails user104 = User.builder()
+                .username("user104")
+                .password(encoder.encode("password"))
+                .roles("USER104")
+                .build();
+
+        UserDetails user105 = User.builder()
+                .username("user105")
+                .password(encoder.encode("password"))
+                .roles("USER105")
+                .build();
+
         UserDetails user = User.builder()
                 .username("user")
                 .password(encoder.encode("password"))
                 .roles("USER")
                 .build();
-
-        System.out.println(encoder.encode("password"));
 
         UserDetails admin = User.builder()
                 .username("admin")
@@ -72,7 +101,7 @@ public class Security {
                 .roles("USER", "ADMIN")
                 .build();
         System.out.println(encoder.encode("password"));
-        return new InMemoryUserDetailsManager(user, admin);
+        return new InMemoryUserDetailsManager(user101,user102, user103, user104, user105, user, admin);
     }
 
     @Bean

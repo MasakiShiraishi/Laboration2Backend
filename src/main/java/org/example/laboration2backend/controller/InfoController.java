@@ -1,6 +1,7 @@
 package org.example.laboration2backend.controller;
 
 import lombok.extern.slf4j.Slf4j;
+
 import org.example.laboration2backend.apiauth.ApiKeyAuthService;
 import org.example.laboration2backend.category.CategoryService;
 import org.example.laboration2backend.dto.CategoryDto;
@@ -9,11 +10,11 @@ import org.example.laboration2backend.entity.ApiKey;
 import org.example.laboration2backend.entity.Place;
 import org.example.laboration2backend.place.PlaceService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.security.Principal;
 import java.util.Collection;
 import java.util.List;
 
@@ -49,6 +50,13 @@ public class InfoController {
         int id = categoryService.addCategory(categoryDto);
         return ResponseEntity.created(URI.create("/category/" + id)).build();
     }
+    // Hämta alla platser (både publika och privata) som tillhör den inloggade användaren.
+    @GetMapping("/places/user")
+    public List<Place> getMyPlaces(Principal principal) {
+    int userId = Integer.parseInt(principal.getName().substring(4)); // Extract ID from "user"
+    log.info("userId is: " + userId);
+    return placeService.getPlacesByUserId(userId);
+}
 
     //Hämta alla publika platser eller en specifik publik plats (för anonyma användare).
     @GetMapping("/place")

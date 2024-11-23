@@ -14,4 +14,7 @@ public interface PlaceRepository extends ListCrudRepository<Place, Integer> {
       List<Place> findByCategoryIdAndPublicStatus(Integer categoryId, Boolean publicStatus);
 
       List<Place> findByPublicStatus(Boolean publicStatus);
+
+      // Fetch all places by user ID (both public and private)
+      List<Place> findByUserId(Integer userId);
 }

@@ -4,9 +4,11 @@ import org.example.laboration2backend.category.CategoryRepository;
 import org.example.laboration2backend.dto.PlaceDto;
 import org.example.laboration2backend.entity.Category;
 import org.example.laboration2backend.entity.Place;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PlaceService {
@@ -23,6 +25,10 @@ public class PlaceService {
                 .map(PlaceDto::fromPlace)
                 .toList();
    }
+
+public List<Place> getPlacesByUserId(int userId) {
+    return placeRepository.findByUserId(userId);
+}
 
    public int addPlace(PlaceDto placeDto) {
        placeRepository.findByName(placeDto.name())
