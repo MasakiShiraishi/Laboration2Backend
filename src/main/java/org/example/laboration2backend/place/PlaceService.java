@@ -46,19 +46,11 @@ public List<Place> getPlacesByUserId(int userId) {
                .ifPresent(existingPlace -> {
                    throw new IllegalArgumentException("A place with the name '" + placeDto.name() + "' already exists.");
                });
-
        Place place = new Place();
-       place.setName(placeDto.name());
-       Category category = categoryRepository.findById(placeDto.categoryId())
-               .orElseThrow(() -> new IllegalArgumentException("Category not found for ID: " + placeDto.categoryId()));
+       PlaceMapper.mapToPlace(placeDto, place);
+       Category category = getCategoryById(placeDto.categoryId());
        place.setCategory(category);
-       place.setUserId(placeDto.userId());
-       place.setPublicStatus(placeDto.published());
-       place.setLastChange(placeDto.lastChange());
-       place.setDescription(placeDto.description());
-       place.setLatitude(placeDto.latitude());
-       place.setLongitude(placeDto.longitude());
-       place.setCreatedTime(placeDto.createdTime());
+
        place = placeRepository.save(place);
        return place.getId();
    }
