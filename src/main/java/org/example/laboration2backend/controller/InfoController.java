@@ -8,6 +8,7 @@ import org.example.laboration2backend.dto.CategoryDto;
 import org.example.laboration2backend.dto.PlaceDto;
 import org.example.laboration2backend.entity.ApiKey;
 import org.example.laboration2backend.entity.Place;
+import org.example.laboration2backend.exceptions.ResourceNotFoundException;
 import org.example.laboration2backend.place.PlaceService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -82,6 +83,27 @@ public class InfoController {
 
         return ResponseEntity.ok(placeDtos);
     }
+
+    @GetMapping("/place/active")
+    public List<Place> publicActivePlaces(){
+        return placeService.getPublicActivePlaces();
+    }
+
+    @GetMapping("/place/inactive")
+    public List<Place> publicInactivePlaces(){
+        return placeService.getPublicInactivePlaces();
+    }
+
+    @DeleteMapping("/place/{placeId}")
+    public ResponseEntity<Void> deletePlace(@PathVariable Integer placeId) {
+        try {
+            placeService.deletePlace(placeId);
+            return ResponseEntity.noContent().build();
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @GetMapping("/api/test")
     @PreAuthorize("hasAuthority('read:test')")
     public Collection<ApiKey> test(){

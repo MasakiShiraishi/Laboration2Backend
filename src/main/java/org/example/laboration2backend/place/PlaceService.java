@@ -1,16 +1,19 @@
 package org.example.laboration2backend.place;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.laboration2backend.category.CategoryRepository;
 import org.example.laboration2backend.dto.PlaceDto;
 import org.example.laboration2backend.entity.Category;
 import org.example.laboration2backend.entity.Place;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.example.laboration2backend.exceptions.ResourceNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class PlaceService {
 
     PlaceRepository placeRepository;
@@ -60,4 +63,25 @@ public List<Place> getPlacesByUserId(int userId) {
    public List<Place> getPublicPlacesByCategory(Integer categoryId) {
         return placeRepository.findByCategoryIdAndPublicStatus(categoryId, true);
    }
+
+   // get only active places
+   public List<Place> getPublicActivePlaces() {
+        return placeRepository.findAllActivePlaces();
+   }
+
+    public List<Place> getPublicInactivePlaces() {
+        return placeRepository.findAllInactivePlaces();
+    }
+
+
+    @Transactional
+    public void deletePlace(Integer placeId) throws ResourceNotFoundException {
+        // Only records with Deleted file is false are included
+        Place place = placeRepository.findActiveById(placeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Place not found with id: " + placeId));
+
+        place.setDeleted(true);
+        placeRepository.save(place);
+        log.info("Place with id {} has been marked as deleted", placeId);
+    }
 }

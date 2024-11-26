@@ -20,7 +20,7 @@ GET http://localhost:8080/place
 GET http://localhost:8080/category/1
 ###
 ### inloggade användaren
-GET http://localhost:8080//places/user
+GET http://localhost:8080/places/user
 ###
 ### kräver inloggning).
 POST http://localhost:8080/place
@@ -38,4 +38,13 @@ Content-Type: application/json
 "createdTime": "2024-11-15T17:35:05Z",
 "deleted": false
 }
+###
+### get all active places
+GET http://localhost:8080/place/active
+###
+### get all inactive places
+GET http://localhost:8080/place/inactive
+###
+### get all inactive places
+DELETE http://localhost:8080/place/13
 ###

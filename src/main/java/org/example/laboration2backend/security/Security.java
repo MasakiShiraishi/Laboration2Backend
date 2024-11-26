@@ -17,8 +17,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.*;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
@@ -44,10 +43,11 @@ public class Security {
                         authorize
                                 .requestMatchers(GET, "/category/**").permitAll()
                                 .requestMatchers(POST, "/category").hasRole("ADMIN")
-                                .requestMatchers(GET, "/place").permitAll()
+                                .requestMatchers(GET, "/place/**").permitAll()
                                 .requestMatchers(GET, "/places/**").hasAnyRole("USER101","USER102", "USER103","USER104","USER105")
                                 .requestMatchers(GET, "/test/**").permitAll()
                                 .requestMatchers(POST, "/place/**").authenticated()
+                                .requestMatchers(DELETE, "/place/**").hasRole("ADMIN")
                                 .anyRequest().denyAll())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
