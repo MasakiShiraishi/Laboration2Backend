@@ -3,8 +3,11 @@ package org.example.laboration2backend.place;
 import lombok.extern.slf4j.Slf4j;
 import org.example.laboration2backend.category.CategoryRepository;
 import org.example.laboration2backend.dto.PlaceDto;
+import org.example.laboration2backend.dto.PlaceMapper;
 import org.example.laboration2backend.entity.Category;
 import org.example.laboration2backend.entity.Place;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.example.laboration2backend.exceptions.ResourceNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +24,11 @@ public class PlaceService {
     public PlaceService(PlaceRepository placeRepository, CategoryRepository categoryRepository) {
         this.placeRepository = placeRepository;
         this.categoryRepository = categoryRepository;
+    }
+
+    private Category getCategoryById(int categoryId) {
+        return categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new IllegalArgumentException("Category not found for ID: " + categoryId));
     }
 
    public List<PlaceDto> allPlaces() {
@@ -73,6 +81,40 @@ public List<Place> getPlacesByUserId(int userId) {
         return placeRepository.findAllInactivePlaces();
     }
 
+    public void updatePlace(int placeId, PlaceDto placeDto) {
+        Place place = placeRepository.findById(placeId)
+                .orElseThrow(() -> new IllegalArgumentException("Place not found for ID: " + placeId));
+        // Get the currently authenticated user
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String currentUsername;
+        if (principal instanceof UserDetails) {
+            currentUsername = ((UserDetails) principal).getUsername();
+        } else {
+            currentUsername = principal.toString();
+        }
+        // Check if the user is the owner or has ADMIN role
+        String placeOwner =  "user" + place.getUserId();
+        boolean isAdmin = SecurityContextHolder.getContext().getAuthentication()
+                .getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
+
+        log.debug("Place owner: {}, Current user: {}, Is admin: {}", placeOwner, currentUsername, isAdmin);
+
+        if(!isAdmin && !placeOwner.equals(currentUsername)) {
+            throw new SecurityException("Unauthorized to update this place");
+        }
+        placeRepository.findByName(placeDto.name())
+                .ifPresent(existingPlace -> {
+                    if (!existingPlace.getId().equals(placeId)) {
+                        throw new IllegalArgumentException("A place with the name '"
+                                + placeDto.name() + "' already exists.");}
+                });
+
+        PlaceMapper.mapToPlace(placeDto, place);
+        Category category = getCategoryById(placeDto.categoryId());
+        place.setCategory(category);
+        placeRepository.save(place);
+    }
 
     @Transactional
     public void deletePlace(Integer placeId) throws ResourceNotFoundException {

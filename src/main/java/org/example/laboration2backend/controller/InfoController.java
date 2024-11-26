@@ -84,6 +84,21 @@ public class InfoController {
         return ResponseEntity.ok(placeDtos);
     }
 
+    @PutMapping("/place/{placeId}")
+    public ResponseEntity<Void> updatePlace(@PathVariable Integer placeId, @RequestBody PlaceDto placeDto){
+        try {
+            placeService.updatePlace(placeId, placeDto);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        } catch (SecurityException e) {
+            return ResponseEntity.status(403).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+
     @GetMapping("/place/active")
     public List<Place> publicActivePlaces(){
         return placeService.getPublicActivePlaces();

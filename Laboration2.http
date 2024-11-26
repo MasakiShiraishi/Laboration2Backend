@@ -45,6 +45,22 @@ GET http://localhost:8080/place/active
 ### get all inactive places
 GET http://localhost:8080/place/inactive
 ###
-### get all inactive places
+###
 DELETE http://localhost:8080/place/13
 ###
+###
+PUT http://localhost:8080/place/13
+Content-Type: application/json
+
+{
+  "name": "Updated Place Name",
+  "categoryId": 1,
+  "userId": 101,
+  "published": true,
+  "lastChange": "2024-11-25T15:30:00Z",
+  "description": "Updated description of the place.",
+  "latitude": 59.3293,
+  "longitude": 18.0686,
+  "createdTime": "2024-11-23T19:10:05Z",
+	"deleted": false
+}

@@ -48,6 +48,7 @@ public class Security {
                                 .requestMatchers(GET, "/test/**").permitAll()
                                 .requestMatchers(POST, "/place/**").authenticated()
                                 .requestMatchers(DELETE, "/place/**").hasRole("ADMIN")
+                                .requestMatchers(PUT, "/place/**").authenticated()
                                 .anyRequest().denyAll())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -89,19 +90,13 @@ public class Security {
                 .roles("USER105")
                 .build();
 
-        UserDetails user = User.builder()
-                .username("user")
-                .password(encoder.encode("password"))
-                .roles("USER")
-                .build();
-
         UserDetails admin = User.builder()
                 .username("admin")
                 .password(encoder.encode("password"))
-                .roles("USER", "ADMIN")
+                .roles("USER101","USER102", "USER103","USER104","USER105", "ADMIN")
                 .build();
         System.out.println(encoder.encode("password"));
-        return new InMemoryUserDetailsManager(user101,user102, user103, user104, user105, user, admin);
+        return new InMemoryUserDetailsManager(user101,user102, user103, user104, user105, admin);
     }
 
     @Bean
