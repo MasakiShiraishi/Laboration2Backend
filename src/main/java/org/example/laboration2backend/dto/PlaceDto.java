@@ -25,16 +25,4 @@ public record PlaceDto(
         );
     }
 
-    public static Place toPlace(PlaceDto placeDto, Category category, Playground playground) {
-        Place place = new Place();
-        place.setName(placeDto.name());
-        place.setCategory(category);
-        place.setUserId(placeDto.userId());
-        place.setPublicStatus(placeDto.published());
-        place.setLastChange(placeDto.lastChange());
-        place.setDescription(placeDto.description());
-        place.setPlayground(playground);
-        place.setCreatedTime(placeDto.createdTime());
-        place.setDeleted(placeDto.deleted());
-        return place; }
 }
