@@ -14,8 +14,7 @@ public class PlaceMapper {
         place.setPublicStatus(placeDto.published());
         place.setLastChange(placeDto.lastChange());
         place.setDescription(placeDto.description());
-        place.setLatitude(placeDto.latitude());
-        place.setLongitude(placeDto.longitude());
         place.setCreatedTime(placeDto.createdTime());
+        place.setDeleted(placeDto.deleted());
     }
 }

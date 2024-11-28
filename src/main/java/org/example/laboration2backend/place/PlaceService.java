@@ -6,6 +6,9 @@ import org.example.laboration2backend.dto.PlaceDto;
 import org.example.laboration2backend.dto.PlaceMapper;
 import org.example.laboration2backend.entity.Category;
 import org.example.laboration2backend.entity.Place;
+import org.example.laboration2backend.entity.Playground;
+import org.example.laboration2backend.playground.PlaygroundRepository;
+import org.example.laboration2backend.security.CheckUserAuthorization;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -21,9 +24,14 @@ public class PlaceService {
 
     PlaceRepository placeRepository;
     CategoryRepository categoryRepository;
-    public PlaceService(PlaceRepository placeRepository, CategoryRepository categoryRepository) {
+    PlaygroundRepository playgroundRepository;
+    CheckUserAuthorization checkUserAuthorization;
+
+    public PlaceService(PlaceRepository placeRepository, CategoryRepository categoryRepository, PlaygroundRepository playgroundRepository, CheckUserAuthorization checkUserAuthorization) {
         this.placeRepository = placeRepository;
         this.categoryRepository = categoryRepository;
+        this.playgroundRepository = playgroundRepository;
+        this.checkUserAuthorization = checkUserAuthorization;
     }
 
     private Category getCategoryById(int categoryId) {
@@ -50,7 +58,9 @@ public List<Place> getPlacesByUserId(int userId) {
        PlaceMapper.mapToPlace(placeDto, place);
        Category category = getCategoryById(placeDto.categoryId());
        place.setCategory(category);
-
+       Playground playground = playgroundRepository.
+               findById(placeDto.playgroundId()) .orElse(null);
+       place.setPlayground(playground);
        place = placeRepository.save(place);
        return place.getId();
    }
@@ -76,25 +86,9 @@ public List<Place> getPlacesByUserId(int userId) {
     public void updatePlace(int placeId, PlaceDto placeDto) {
         Place place = placeRepository.findById(placeId)
                 .orElseThrow(() -> new IllegalArgumentException("Place not found for ID: " + placeId));
-        // Get the currently authenticated user
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String currentUsername;
-        if (principal instanceof UserDetails) {
-            currentUsername = ((UserDetails) principal).getUsername();
-        } else {
-            currentUsername = principal.toString();
-        }
-        // Check if the user is the owner or has ADMIN role
-        String placeOwner =  "user" + place.getUserId();
-        boolean isAdmin = SecurityContextHolder.getContext().getAuthentication()
-                .getAuthorities().stream()
-                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
 
-        log.debug("Place owner: {}, Current user: {}, Is admin: {}", placeOwner, currentUsername, isAdmin);
+        checkUserAuthorization.checkUserAuthorization(place);
 
-        if(!isAdmin && !placeOwner.equals(currentUsername)) {
-            throw new SecurityException("Unauthorized to update this place");
-        }
         placeRepository.findByName(placeDto.name())
                 .ifPresent(existingPlace -> {
                     if (!existingPlace.getId().equals(placeId)) {
@@ -105,17 +99,23 @@ public List<Place> getPlacesByUserId(int userId) {
         PlaceMapper.mapToPlace(placeDto, place);
         Category category = getCategoryById(placeDto.categoryId());
         place.setCategory(category);
+        Playground playground = playgroundRepository.
+                findById(placeDto.playgroundId()) .orElse(null);
+        place.setPlayground(playground);
         placeRepository.save(place);
     }
 
     @Transactional
     public void deletePlace(Integer placeId) throws ResourceNotFoundException {
         // Only records with Deleted file is false are included
-        Place place = placeRepository.findActiveById(placeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Place not found with id: " + placeId));
+        Place place = placeRepository.findActiveById(placeId) .orElseThrow(()
+                -> new ResourceNotFoundException("Place not found with id: " + placeId));
+
+        checkUserAuthorization.checkUserAuthorization(place);
 
         place.setDeleted(true);
         placeRepository.save(place);
         log.info("Place with id {} has been marked as deleted", placeId);
     }
+
 }

@@ -4,15 +4,18 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.proxy.HibernateProxy;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Objects;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "place", schema = "mydatabase")
 public class Place {
@@ -48,13 +51,11 @@ public class Place {
     @Column(name = "description")
     private String description;
 
-    @NotNull
-    @Column(name = "latitude", nullable = false, precision = 10, scale = 8)
-    private BigDecimal latitude;
-
-    @NotNull
-    @Column(name = "longitude", nullable = false, precision = 11, scale = 8)
-    private BigDecimal longitude;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @JoinColumn(name = "playground_id")
+    @JsonBackReference
+    private Playground playground;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_time")
@@ -63,6 +64,7 @@ public class Place {
     @ColumnDefault("0")
     @Column(name = "deleted")
     private Boolean deleted;
+
 
     public Integer getId() {
         return id;
@@ -120,20 +122,12 @@ public class Place {
         this.description = description;
     }
 
-    public BigDecimal getLatitude() {
-        return latitude;
+    public Playground getPlayground() {
+        return playground;
     }
 
-    public void setLatitude(BigDecimal latitude) {
-        this.latitude = latitude;
-    }
-
-    public BigDecimal getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(BigDecimal longitude) {
-        this.longitude = longitude;
+    public void setPlayground(Playground playground) {
+        this.playground = playground;
     }
 
     public Instant getCreatedTime() {

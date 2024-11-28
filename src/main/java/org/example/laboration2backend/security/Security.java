@@ -47,8 +47,10 @@ public class Security {
                                 .requestMatchers(GET, "/places/**").hasAnyRole("USER101","USER102", "USER103","USER104","USER105")
                                 .requestMatchers(GET, "/test/**").permitAll()
                                 .requestMatchers(POST, "/place/**").authenticated()
-                                .requestMatchers(DELETE, "/place/**").hasRole("ADMIN")
+                                .requestMatchers(DELETE, "/place/**").hasAnyRole("USER101","USER102", "USER103","USER104","USER105")
                                 .requestMatchers(PUT, "/place/**").authenticated()
+                                .requestMatchers(GET, "/playgrounds").permitAll()
+                                .requestMatchers(POST, "/playgrounds").permitAll()
                                 .anyRequest().denyAll())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
