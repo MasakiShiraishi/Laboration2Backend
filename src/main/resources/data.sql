@@ -36,3 +36,11 @@ INSERT INTO playground (coordinate) VALUES
        (ST_GeomFromText('POINT(48.860611 2.337644)', 4326)),   -- Louvre Museum
        (ST_GeomFromText('POINT(41.902782 12.496366)', 4326)),  -- Italian Pizzeria
        (ST_GeomFromText('POINT(34.693738 135.502165)', 4326)); -- Outlet Mall
+
+INSERT INTO AppUser (username, password, role) VALUES
+       ('user101', '$2a$10$D9XxFgR5G.AMwe8LfRXFbO3uiCynZP0kH8MhHydbYfiO6TZ7IUIRe', 'USER101'),
+       ('user102', '$2a$10$D9XxFgR5G.AMwe8LfRXFbO3uiCynZP0kH8MhHydbYfiO6TZ7IUIRe', 'USER102'),
+       ('user103', '$2a$10$D9XxFgR5G.AMwe8LfRXFbO3uiCynZP0kH8MhHydbYfiO6TZ7IUIRe', 'USER103'),
+       ('user104', '$2a$10$D9XxFgR5G.AMwe8LfRXFbO3uiCynZP0kH8MhHydbYfiO6TZ7IUIRe', 'USER104'),
+       ('user105', '$2a$10$D9XxFgR5G.AMwe8LfRXFbO3uiCynZP0kH8MhHydbYfiO6TZ7IUIRe', 'USER105'),
+       ('admin', '$2a$10$D9XxFgR5G.AMwe8LfRXFbO3uiCynZP0kH8MhHydbYfiO6TZ7IUIRe', 'USER101,USER102,USER103,USER104,USER105,ADMIN');
