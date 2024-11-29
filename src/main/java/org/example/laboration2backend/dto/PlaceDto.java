@@ -1,8 +1,6 @@
 package org.example.laboration2backend.dto;
 
 import org.example.laboration2backend.entity.Place;
-import org.example.laboration2backend.entity.Playground;
-import org.example.laboration2backend.entity.Category;
 import java.time.Instant;
 
 public record PlaceDto(

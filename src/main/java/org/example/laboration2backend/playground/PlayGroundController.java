@@ -1,6 +1,6 @@
 package org.example.laboration2backend.playground;
 
-import org.example.laboration2backend.entity.Place;
+import org.example.laboration2backend.dto.PlaceDto;
 import org.example.laboration2backend.entity.Playground;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +27,18 @@ public class PlayGroundController {
                                 p.getCoordinate().getPosition().getLat(),
                                 p.getCoordinate().getPosition().getLon())
                 ).toList();
+    }
+
+
+    @GetMapping("/playgrounds/search")
+    public List<PlaceDto> searchPlaygrounds(@RequestParam Double lat,
+                                            @RequestParam Double lon,
+                                            @RequestParam Double radius) {
+        List<Playground> playgrounds = playgroundService.getPlaygroundsWithinRadius(lat, lon, radius);
+        return playgrounds.stream() .flatMap(p
+                -> playgroundService.getPlaceByPlaygroundId(p.getId()).stream())
+                .map(PlaceDto::fromPlace)
+                .toList();
     }
 
     @PostMapping("/playgrounds")

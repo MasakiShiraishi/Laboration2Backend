@@ -28,12 +28,4 @@ public class Playground {
     @JsonManagedReference
     private Set<Place> places = new LinkedHashSet<>();
 
-    public Set<Place> getPlaces() {
-        return places;
-    }
-
-    public void setPlaces(Set<Place> places) {
-        this.places = places;
-    }
-
 }

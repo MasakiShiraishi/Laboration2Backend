@@ -49,7 +49,7 @@ public class Security {
                                 .requestMatchers(POST, "/place/**").authenticated()
                                 .requestMatchers(DELETE, "/place/**").hasAnyRole("USER101","USER102", "USER103","USER104","USER105")
                                 .requestMatchers(PUT, "/place/**").authenticated()
-                                .requestMatchers(GET, "/playgrounds").permitAll()
+                                .requestMatchers(GET, "/playgrounds/**").permitAll()
                                 .requestMatchers(POST, "/playgrounds").permitAll()
                                 .anyRequest().denyAll())
                 .sessionManagement(session ->
