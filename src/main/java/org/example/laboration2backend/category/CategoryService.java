@@ -30,6 +30,8 @@ public class CategoryService {
         category = categoryRepository.save(category);
         return category.getId();
     }
-
+    public Category findById(Integer id) throws ResourceNotFoundException {
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id " + id)); }
 
 }

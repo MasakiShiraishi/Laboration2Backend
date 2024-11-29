@@ -31,11 +31,10 @@ Content-Type: application/json
 "categoryId": 2,
 "userId": 104,
 "published": true,
-"lastChange": "2024-11-15T17:35:05Z",
+"lastChange": "2024-11-27T17:35:05Z",
 "description": "A well-known sushi restaurants with amazing sushi",
-"latitude": 59.3445102,
-"longitude": 18.0398688,
-"createdTime": "2024-11-15T17:35:05Z",
+"playgroundId": 2,
+"createdTime": "2024-11-27T17:35:05Z",
 "deleted": false
 }
 ###
@@ -46,21 +45,20 @@ GET http://localhost:8080/place/active
 GET http://localhost:8080/place/inactive
 ###
 ###
-DELETE http://localhost:8080/place/13
+DELETE http://localhost:8080/place/18
 ###
 ###
-PUT http://localhost:8080/place/13
+PUT http://localhost:8080/place/18
 Content-Type: application/json
 
 {
   "name": "Updated Place Name",
   "categoryId": 1,
-  "userId": 101,
+  "userId": 105,
   "published": true,
   "lastChange": "2024-11-25T15:30:00Z",
   "description": "Updated description of the place.",
-  "latitude": 59.3293,
-  "longitude": 18.0686,
+  "playgroundId": 2,
   "createdTime": "2024-11-23T19:10:05Z",
 	"deleted": false
 }

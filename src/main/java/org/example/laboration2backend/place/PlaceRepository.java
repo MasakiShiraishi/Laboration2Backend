@@ -28,4 +28,8 @@ public interface PlaceRepository extends ListCrudRepository<Place, Integer> {
 
       @Query("SELECT p FROM Place p WHERE p.deleted = true")
       List<Place> findAllInactivePlaces();
+
+      @Query("SELECT p FROM Place p WHERE p.playground.id = :playgroundId")
+      List<Place> findByPlaygroundId(@Param("playgroundId") Integer playgroundId);
+
 }

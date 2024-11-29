@@ -7,9 +7,13 @@ import org.example.laboration2backend.category.CategoryService;
 import org.example.laboration2backend.dto.CategoryDto;
 import org.example.laboration2backend.dto.PlaceDto;
 import org.example.laboration2backend.entity.ApiKey;
+import org.example.laboration2backend.entity.Category;
 import org.example.laboration2backend.entity.Place;
+import org.example.laboration2backend.entity.Playground;
 import org.example.laboration2backend.exceptions.ResourceNotFoundException;
 import org.example.laboration2backend.place.PlaceService;
+import org.example.laboration2backend.playground.PlaygroundRepository;
+import org.example.laboration2backend.playground.PlaygroundService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +22,8 @@ import java.net.URI;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
@@ -26,8 +32,9 @@ public class InfoController {
     private final ApiKeyAuthService apiKeyAuthService;
     PlaceService placeService;
     CategoryService categoryService;
+    PlaygroundRepository playgroundRepository;
 
-    public InfoController(CategoryService categoryService, PlaceService placeService, ApiKeyAuthService apiKeyAuthService){
+    public InfoController(CategoryService categoryService, PlaceService placeService, ApiKeyAuthService apiKeyAuthService) {
 
         this.categoryService = categoryService;
         this.placeService = placeService;
@@ -61,9 +68,9 @@ public class InfoController {
 
     //Hämta alla publika platser eller en specifik publik plats (för anonyma användare).
     @GetMapping("/place")
-    public List<Place> publicPlaces(){
-        return placeService.getPublicPlaces();
-    }
+    public List<PlaceDto> publicPlaces(){
+        List<Place> places = placeService.getPublicPlaces();
+        return places.stream().map(PlaceDto::fromPlace).collect(Collectors.toList()); }
 
     //Skapa en ny plats (kräver inloggning).
     @PostMapping("/place")
