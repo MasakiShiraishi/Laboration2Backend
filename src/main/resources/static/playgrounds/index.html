@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css"/>
+  <style>
+    #map {
+      height: 600px;
+      width: 100%;
+    }
+
+    .custom-icon {
+      position: relative;
+      display: inline-block;
+      background-color: white;
+      border-radius: 50%;
+    }
+
+    #refresh-button {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      padding: 10px 20px;
+      background-color: white;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    #refresh-button:hover {
+      background-color: #f0f0f0;
+    }
+  </style>
+
+</head>
+<body>
+<div id="map"></div>
+<div id="refresh-button" onclick="refreshMap()">Refresh</div>
+
+<script src="../js/script.js"></script>
+</body>
+</html>
