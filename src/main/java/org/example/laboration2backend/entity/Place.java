@@ -36,8 +36,10 @@ public class Place {
     private Category category;
 
     @NotNull
-    @Column(name = "user_id", nullable = false)
-    private Integer userId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "app_user_id", nullable = false)
+    private AppUser appUser;
 
     @ColumnDefault("1")
     @Column(name = "public_status")
@@ -65,7 +67,6 @@ public class Place {
     @Column(name = "deleted")
     private Boolean deleted;
 
-
     public Integer getId() {
         return id;
     }
@@ -90,13 +91,14 @@ public class Place {
         this.category = category;
     }
 
-    public Integer getUserId() {
-        return userId;
+    public AppUser getAppUser() {
+        return appUser;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setAppUser(AppUser appUser) {
+        this.appUser = appUser;
     }
+
 
     public Boolean getPublicStatus() {
         return publicStatus;

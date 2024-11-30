@@ -1,6 +1,6 @@
 package org.example.laboration2backend.security;
 
-import org.example.laboration2backend.entity.Place;
+import org.example.laboration2backend.entity.AppUser;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CheckUserAuthorization {
 
-    public void checkUserAuthorization(Place place) {
+    public void checkUserAuthorization(AppUser appUser) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String currentUsername;
         if (principal instanceof UserDetails) {
@@ -20,7 +20,8 @@ public class CheckUserAuthorization {
             currentUsername = principal.toString();
         }
 
-        String placeOwner = "user" + place.getUserId();
+//        String placeOwner = "user" + place.getUserId();
+        String placeOwner = appUser.getUsername();
         boolean isAdmin = SecurityContextHolder.getContext().getAuthentication()
                 .getAuthorities().stream()
                 .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));

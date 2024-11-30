@@ -18,7 +18,7 @@ public interface PlaceRepository extends ListCrudRepository<Place, Integer> {
       List<Place> findByPublicStatus(Boolean publicStatus);
 
       // Fetch all places by user ID (both public and private)
-      List<Place> findByUserId(Integer userId);
+      List<Place> findByAppUserId(Integer appUserId);
 
       @Query("SELECT p FROM Place p WHERE p.deleted = false AND p.id = :placeId")
       Optional<Place> findActiveById(@Param("placeId") Integer placeId);

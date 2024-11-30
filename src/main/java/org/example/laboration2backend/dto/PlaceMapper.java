@@ -10,7 +10,7 @@ public class PlaceMapper {
 
     public static void mapToPlace(PlaceDto placeDto, Place place) {
         place.setName(placeDto.name());
-        place.setUserId(placeDto.userId());
+//        place.setAppUser(place.appUser());
         place.setPublicStatus(placeDto.published());
         place.setLastChange(placeDto.lastChange());
         place.setDescription(placeDto.description());

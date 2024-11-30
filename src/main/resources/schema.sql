@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS place (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     category_id BIGINT,
-    user_id BIGINT NOT NULL,
+    app_user_id BIGINT NOT NULL,
     public_status BOOLEAN DEFAULT TRUE,
     last_change DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     description TEXT,
@@ -22,7 +22,8 @@ CREATE TABLE IF NOT EXISTS place (
     created_time DATETIME DEFAULT CURRENT_TIMESTAMP,
     deleted BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (category_id) REFERENCES category(id) ON DELETE SET NULL,
-    FOREIGN KEY (playground_id) REFERENCES playground(id) ON DELETE SET NULL
+    FOREIGN KEY (playground_id) REFERENCES playground(id) ON DELETE SET NULL,
+    FOREIGN KEY (app_user_id) REFERENCES app_user(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS api_key (
@@ -39,7 +40,7 @@ CREATE TABLE IF NOT EXISTS playground (
     coordinate GEOMETRY NOT NULL SRID 4326
 );
 
-CREATE TABLE appUser (
+CREATE TABLE IF NOT EXISTS app_user (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,

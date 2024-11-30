@@ -1,9 +1,14 @@
 package org.example.laboration2backend.security;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 
 import org.example.laboration2backend.apiauth.ApiKeyAuthService;
+import org.example.laboration2backend.user.AppUserRepository;
+import org.example.laboration2backend.user.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -23,14 +28,23 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration
 @EnableMethodSecurity
 public class Security {
+
+    @Bean public AuthenticationProvider authenticationProvider(AppUserRepository appUserRepository) {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService(appUserRepository));
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
     @Bean
     @Order(1)
     public SecurityFilterChain apiFilterChain(HttpSecurity http, ApiKeyAuthService apiKeyAuthService) throws Exception {
         http
                 .securityMatcher("/api/**")
                 .csrf(AbstractHttpConfigurer::disable)
+//                .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())
+//                .addFilterBefore(new ApiKeyAuthFilter(apiKeyAuthService), UsernamePasswordAuthenticationFilter.class);
                 .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())
-                .addFilterBefore(new ApiKeyAuthFilter(apiKeyAuthService), UsernamePasswordAuthenticationFilter.class);
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(withDefaults()));
         return http.build();
     }
 
@@ -51,58 +65,23 @@ public class Security {
                                 .requestMatchers(PUT, "/place/**").authenticated()
                                 .requestMatchers(GET, "/playgrounds/**").permitAll()
                                 .requestMatchers(POST, "/playgrounds").permitAll()
+                                .requestMatchers(GET, "/user/**").permitAll()
                                 .anyRequest().denyAll())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(withDefaults())
-                .exceptionHandling(exception ->
-                        exception.authenticationEntryPoint(new CustomAuthenticationEntryPoint()));
+//                .exceptionHandling(exception ->
+//                        exception.authenticationEntryPoint(new CustomAuthenticationEntryPoint()));
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(new CustomAuthenticationEntryPoint()))
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(withDefaults()));
         return http.build();
     }
-
-    @Bean
-    public UserDetailsService users() {
-        PasswordEncoder encoder = passwordEncoder();
-        UserDetails user101 = User.builder()
-                .username("user101")
-                .password(encoder.encode("password"))
-                .roles("USER101")
-                .build();
-        UserDetails user102 = User.builder()
-                .username("user102")
-                .password(encoder.encode("password"))
-                .roles("USER102")
-                .build();
-
-        UserDetails user103 = User.builder()
-                .username("user103")
-                .password(encoder.encode("password"))
-                .roles("USER103")
-                .build();
-
-        UserDetails user104 = User.builder()
-                .username("user104")
-                .password(encoder.encode("password"))
-                .roles("USER104")
-                .build();
-
-        UserDetails user105 = User.builder()
-                .username("user105")
-                .password(encoder.encode("password"))
-                .roles("USER105")
-                .build();
-
-        UserDetails admin = User.builder()
-                .username("admin")
-                .password(encoder.encode("password"))
-                .roles("USER101","USER102", "USER103","USER104","USER105", "ADMIN")
-                .build();
-        System.out.println(encoder.encode("password"));
-        return new InMemoryUserDetailsManager(user101,user102, user103, user104, user105, admin);
-    }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    @Bean
+    public UserDetailsService userDetailsService(AppUserRepository appUserRepository) {
+        return new CustomUserDetailsService(appUserRepository); }
 }

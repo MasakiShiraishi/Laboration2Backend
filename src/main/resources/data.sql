@@ -6,15 +6,15 @@ INSERT INTO category (name, symbol, description) VALUES
      ('Cultural Sites', '🏛️', 'Museums, galleries, and historical sites');
 
 -- Insert initial data into the Plats table
-INSERT INTO place (name, category_id, user_id, public_status, description, playground_id) VALUES
-     ('Central Park', 1, 101, TRUE, 'A large public park located in the city center', 1),
-     ('Sagrada Familia', 4, 102, TRUE, 'A world heritage site and an iconic church', 2),
-     ('Shibuya Mall', 3, 103, TRUE, 'A popular mall for shopping and dining', 3),
-     ('Cafe Delicious', 2, 104, TRUE, 'A well-known cafe with amazing desserts', 4),
-     ('Ueno Zoo', 1, 101, FALSE, 'A zoo with various animal exhibits', 5),
-     ('Louvre Museum', 4, 105, TRUE, 'The historic museum housing the Mona Lisa', 6),
-     ('Italian Pizzeria', 2, 102, TRUE, 'An authentic Italian restaurant', 7),
-     ('Outlet Mall', 3, 103, FALSE, 'A mall offering discounted brand items', 8);
+INSERT INTO place (name, category_id, app_user_id, public_status, description, playground_id) VALUES
+     ('Central Park', 1, 1, TRUE, 'A large public park located in the city center', 1),
+     ('Sagrada Familia', 4, 2, TRUE, 'A world heritage site and an iconic church', 2),
+     ('Shibuya Mall', 3, 3, TRUE, 'A popular mall for shopping and dining', 3),
+     ('Cafe Delicious', 2, 4, TRUE, 'A well-known cafe with amazing desserts', 4),
+     ('Ueno Zoo', 1, 1, FALSE, 'A zoo with various animal exhibits', 5),
+     ('Louvre Museum', 4, 5, TRUE, 'The historic museum housing the Mona Lisa', 6),
+     ('Italian Pizzeria', 2, 2, TRUE, 'An authentic Italian restaurant', 7),
+     ('Outlet Mall', 3, 3, FALSE, 'A mall offering discounted brand items', 8);
 
 
 -- Insert sample data into api_key table
@@ -37,7 +37,7 @@ INSERT INTO playground (coordinate) VALUES
        (ST_GeomFromText('POINT(41.902782 12.496366)', 4326)),  -- Italian Pizzeria
        (ST_GeomFromText('POINT(34.693738 135.502165)', 4326)); -- Outlet Mall
 
-INSERT INTO AppUser (username, password, role) VALUES
+INSERT INTO app_user (username, password, role) VALUES
        ('user101', '$2a$10$D9XxFgR5G.AMwe8LfRXFbO3uiCynZP0kH8MhHydbYfiO6TZ7IUIRe', 'USER101'),
        ('user102', '$2a$10$D9XxFgR5G.AMwe8LfRXFbO3uiCynZP0kH8MhHydbYfiO6TZ7IUIRe', 'USER102'),
        ('user103', '$2a$10$D9XxFgR5G.AMwe8LfRXFbO3uiCynZP0kH8MhHydbYfiO6TZ7IUIRe', 'USER103'),

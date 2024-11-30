@@ -9,8 +9,6 @@ import org.example.laboration2backend.entity.Place;
 import org.example.laboration2backend.entity.Playground;
 import org.example.laboration2backend.playground.PlaygroundRepository;
 import org.example.laboration2backend.security.CheckUserAuthorization;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.example.laboration2backend.exceptions.ResourceNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,7 +44,7 @@ public class PlaceService {
    }
 
 public List<Place> getPlacesByUserId(int userId) {
-    return placeRepository.findByUserId(userId);
+    return placeRepository.findByAppUserId(userId);
 }
 
    public int addPlace(PlaceDto placeDto) {
@@ -87,7 +85,7 @@ public List<Place> getPlacesByUserId(int userId) {
         Place place = placeRepository.findById(placeId)
                 .orElseThrow(() -> new IllegalArgumentException("Place not found for ID: " + placeId));
 
-        checkUserAuthorization.checkUserAuthorization(place);
+        checkUserAuthorization.checkUserAuthorization(place.getAppUser());
 
         placeRepository.findByName(placeDto.name())
                 .ifPresent(existingPlace -> {
@@ -111,7 +109,7 @@ public List<Place> getPlacesByUserId(int userId) {
         Place place = placeRepository.findActiveById(placeId) .orElseThrow(()
                 -> new ResourceNotFoundException("Place not found with id: " + placeId));
 
-        checkUserAuthorization.checkUserAuthorization(place);
+        checkUserAuthorization.checkUserAuthorization(place.getAppUser());
 
         place.setDeleted(true);
         placeRepository.save(place);
