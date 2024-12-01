@@ -16,8 +16,7 @@ import java.util.stream.Collectors;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    @Autowired
-    private AppUserRepository appUserRepository;
+    private final AppUserRepository appUserRepository;
 
     public CustomUserDetailsService(AppUserRepository appUserRepository) {
         this.appUserRepository = appUserRepository;
@@ -33,8 +32,11 @@ public class CustomUserDetailsService implements UserDetailsService {
         List<SimpleGrantedAuthority> authorities = Arrays.stream(appUser.getRole().split(","))
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                 .collect(Collectors.toList());
-        return User.builder() .username(appUser.getUsername()) .password(appUser.getPassword()) .authorities(authorities) .build();
-
+//        return User.builder() .username(appUser.getUsername()) .password(appUser.getPassword()) .authorities(authorities) .build();
+        return new User(
+                appUser.getUsername(),
+                appUser.getPassword(),
+                authorities );
     }
 }
 

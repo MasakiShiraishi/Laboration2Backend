@@ -37,10 +37,18 @@ INSERT INTO playground (coordinate) VALUES
        (ST_GeomFromText('POINT(41.902782 12.496366)', 4326)),  -- Italian Pizzeria
        (ST_GeomFromText('POINT(34.693738 135.502165)', 4326)); -- Outlet Mall
 
+# INSERT INTO app_user (username, password, role) VALUES
+#        ('user101', '$2a$10$D9XxFgR5G.AMwe8LfRXFbO3uiCynZP0kH8MhHydbYfiO6TZ7IUIRe', 'USER101'),
+#        ('user102', '$2a$10$D9XxFgR5G.AMwe8LfRXFbO3uiCynZP0kH8MhHydbYfiO6TZ7IUIRe', 'USER102'),
+#        ('user103', '$2a$10$D9XxFgR5G.AMwe8LfRXFbO3uiCynZP0kH8MhHydbYfiO6TZ7IUIRe', 'USER103'),
+#        ('user104', '$2a$10$D9XxFgR5G.AMwe8LfRXFbO3uiCynZP0kH8MhHydbYfiO6TZ7IUIRe', 'USER104'),
+#        ('user105', '$2a$10$D9XxFgR5G.AMwe8LfRXFbO3uiCynZP0kH8MhHydbYfiO6TZ7IUIRe', 'USER105'),
+#        ('admin', '$2a$10$D9XxFgR5G.AMwe8LfRXFbO3uiCynZP0kH8MhHydbYfiO6TZ7IUIRe', 'USER101,USER102,USER103,USER104,USER105,ADMIN');
+
 INSERT INTO app_user (username, password, role) VALUES
-       ('user101', '$2a$10$D9XxFgR5G.AMwe8LfRXFbO3uiCynZP0kH8MhHydbYfiO6TZ7IUIRe', 'USER101'),
-       ('user102', '$2a$10$D9XxFgR5G.AMwe8LfRXFbO3uiCynZP0kH8MhHydbYfiO6TZ7IUIRe', 'USER102'),
-       ('user103', '$2a$10$D9XxFgR5G.AMwe8LfRXFbO3uiCynZP0kH8MhHydbYfiO6TZ7IUIRe', 'USER103'),
-       ('user104', '$2a$10$D9XxFgR5G.AMwe8LfRXFbO3uiCynZP0kH8MhHydbYfiO6TZ7IUIRe', 'USER104'),
-       ('user105', '$2a$10$D9XxFgR5G.AMwe8LfRXFbO3uiCynZP0kH8MhHydbYfiO6TZ7IUIRe', 'USER105'),
-       ('admin', '$2a$10$D9XxFgR5G.AMwe8LfRXFbO3uiCynZP0kH8MhHydbYfiO6TZ7IUIRe', 'USER101,USER102,USER103,USER104,USER105,ADMIN');
+         ('user101', '$2a$10$dJb4G4Kj.lwTLTKGn1zhbeKsxHR1s4sZoJsbJgSd1JdV0F6qdevJ2', 'USER101'),
+         ('user102', '$2a$10$C6UxQvAIjv6knOwJrHNol.KqOasYEZqLHMoJrw/zVvRLXokp4TWzm', 'USER102'),
+         ('user103', '$2a$10$OJmiRxxyBsEI4aV.Caeh4encewI6IKax.DEKttYErsoTdclG7sMUK', 'USER103'),
+         ('user104', '$2a$10$Ruo3DAfsLryiXFt3AtAqn.ikwIMzrDvvWL8OveTK0SKOa1BaRrWQW', 'USER104'),
+         ('user105', '$2a$10$jdYI.V79.u0fVZdzDtLoneIJQJ32Jberc.AVycFewvaNJ7nUd1ZS6', 'USER105'),
+         ('admin', '$2a$10$qQ.HKHKPeTaCxAq6I17qfeLUW9v/8ixQXS7Yz92BYY.7Rehd.ENbC', 'USER101,USER102,USER103,USER104,USER105,ADMIN');

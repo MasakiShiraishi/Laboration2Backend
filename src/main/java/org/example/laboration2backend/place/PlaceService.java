@@ -4,11 +4,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.laboration2backend.category.CategoryRepository;
 import org.example.laboration2backend.dto.PlaceDto;
 import org.example.laboration2backend.dto.PlaceMapper;
+import org.example.laboration2backend.entity.AppUser;
 import org.example.laboration2backend.entity.Category;
 import org.example.laboration2backend.entity.Place;
 import org.example.laboration2backend.entity.Playground;
 import org.example.laboration2backend.playground.PlaygroundRepository;
 import org.example.laboration2backend.security.CheckUserAuthorization;
+import org.example.laboration2backend.user.AppUserRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.example.laboration2backend.exceptions.ResourceNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,12 +29,16 @@ public class PlaceService {
     CategoryRepository categoryRepository;
     PlaygroundRepository playgroundRepository;
     CheckUserAuthorization checkUserAuthorization;
+    AppUserRepository appUserRepository;
 
-    public PlaceService(PlaceRepository placeRepository, CategoryRepository categoryRepository, PlaygroundRepository playgroundRepository, CheckUserAuthorization checkUserAuthorization) {
+    public PlaceService(PlaceRepository placeRepository, CategoryRepository categoryRepository,
+                        PlaygroundRepository playgroundRepository, CheckUserAuthorization checkUserAuthorization,
+                        AppUserRepository appUserRepository) {
         this.placeRepository = placeRepository;
         this.categoryRepository = categoryRepository;
         this.playgroundRepository = playgroundRepository;
         this.checkUserAuthorization = checkUserAuthorization;
+        this.appUserRepository = appUserRepository;
     }
 
     private Category getCategoryById(int categoryId) {
@@ -46,7 +55,7 @@ public class PlaceService {
 public List<Place> getPlacesByUserId(int userId) {
     return placeRepository.findByAppUserId(userId);
 }
-
+    @Transactional
    public int addPlace(PlaceDto placeDto) {
        placeRepository.findByName(placeDto.name())
                .ifPresent(existingPlace -> {
@@ -59,7 +68,10 @@ public List<Place> getPlacesByUserId(int userId) {
        Playground playground = playgroundRepository.
                findById(placeDto.playgroundId()) .orElse(null);
        place.setPlayground(playground);
-       place = placeRepository.save(place);
+
+       AppUser appUser = appUserRepository.findById(placeDto.appUserId()).orElse(null);
+       place.setAppUser(appUser);
+        place = placeRepository.save(place);
        return place.getId();
    }
 

@@ -6,23 +6,22 @@ import org.example.laboration2backend.apiauth.ApiKeyAuthService;
 import org.example.laboration2backend.category.CategoryService;
 import org.example.laboration2backend.dto.CategoryDto;
 import org.example.laboration2backend.dto.PlaceDto;
-import org.example.laboration2backend.entity.ApiKey;
-import org.example.laboration2backend.entity.Category;
-import org.example.laboration2backend.entity.Place;
-import org.example.laboration2backend.entity.Playground;
+import org.example.laboration2backend.entity.*;
 import org.example.laboration2backend.exceptions.ResourceNotFoundException;
 import org.example.laboration2backend.place.PlaceService;
 import org.example.laboration2backend.playground.PlaygroundRepository;
-import org.example.laboration2backend.playground.PlaygroundService;
+import org.example.laboration2backend.user.AppUserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.security.Principal;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -33,12 +32,15 @@ public class InfoController {
     PlaceService placeService;
     CategoryService categoryService;
     PlaygroundRepository playgroundRepository;
+     AppUserRepository appUserRepository;
 
-    public InfoController(CategoryService categoryService, PlaceService placeService, ApiKeyAuthService apiKeyAuthService) {
+    public InfoController(CategoryService categoryService, PlaceService placeService,
+                          ApiKeyAuthService apiKeyAuthService, AppUserRepository appUserRepository) {
 
         this.categoryService = categoryService;
         this.placeService = placeService;
         this.apiKeyAuthService = apiKeyAuthService;
+        this.appUserRepository = appUserRepository;
     }
 
     @GetMapping("/")
@@ -60,10 +62,21 @@ public class InfoController {
     }
     // Hämta alla platser (både publika och privata) som tillhör den inloggade användaren.
     @GetMapping("/places/user")
-    public List<Place> getMyPlaces(Principal principal) {
-    int userId = Integer.parseInt(principal.getName().substring(4)); // Extract ID from "user"
-    log.info("userId is: " + userId);
-    return placeService.getPlacesByUserId(userId);
+   public List<PlaceDto> getMyPlaces() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username;
+        if (authentication.getPrincipal() instanceof UserDetails) {
+            username = ((UserDetails) authentication.getPrincipal()).getUsername();
+        } else {
+            username = authentication.getPrincipal().toString(); }
+        AppUser appUser = appUserRepository.findByUsername(username);
+        if (appUser == null) {
+            throw new UsernameNotFoundException("User not found");
+        }
+        int userId = appUser.getId();
+         log.info("userId is: " + userId);
+        List<Place> places = placeService.getPlacesByUserId(userId);
+        return places.stream().map(PlaceDto::fromPlace).toList();
 }
 
     //Hämta alla publika platser eller en specifik publik plats (för anonyma användare).
@@ -107,13 +120,17 @@ public class InfoController {
 
 
     @GetMapping("/place/active")
-    public List<Place> publicActivePlaces(){
-        return placeService.getPublicActivePlaces();
+    public List<PlaceDto> publicActivePlaces(){
+        return placeService.getPublicActivePlaces().stream()
+                .map(PlaceDto::fromPlace)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/place/inactive")
-    public List<Place> publicInactivePlaces(){
-        return placeService.getPublicInactivePlaces();
+    public List<PlaceDto> publicInactivePlaces(){
+        return placeService.getPublicInactivePlaces().stream()
+                .map(PlaceDto::fromPlace)
+                .collect(Collectors.toList());
     }
 
     @DeleteMapping("/place/{placeId}")

@@ -1,5 +1,6 @@
 package org.example.laboration2backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -12,6 +13,7 @@ import java.util.Objects;
 @Setter
 @Entity
 @Table(name = "app_user", schema = "mydatabase")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

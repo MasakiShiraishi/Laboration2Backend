@@ -29,7 +29,7 @@ Content-Type: application/json
 {
 "name": "Sushi by Kyoto",
 "categoryId": 2,
-"userId": 104,
+"appUserId": 4,
 "published": true,
 "lastChange": "2024-11-27T17:35:05Z",
 "description": "A well-known sushi restaurants with amazing sushi",
@@ -54,7 +54,7 @@ Content-Type: application/json
 {
   "name": "Updated Place Name",
   "categoryId": 1,
-  "userId": 105,
+  "appUserId": 105,
   "published": true,
   "lastChange": "2024-11-25T15:30:00Z",
   "description": "Updated description of the place.",
