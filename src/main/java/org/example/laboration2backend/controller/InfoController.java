@@ -1,8 +1,9 @@
 package org.example.laboration2backend.controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.security.oauth2.jwt.Jwt;
 import lombok.extern.slf4j.Slf4j;
 
-import org.example.laboration2backend.apiauth.ApiKeyAuthService;
 import org.example.laboration2backend.category.CategoryService;
 import org.example.laboration2backend.dto.CategoryDto;
 import org.example.laboration2backend.dto.PlaceDto;
@@ -12,7 +13,6 @@ import org.example.laboration2backend.place.PlaceService;
 import org.example.laboration2backend.playground.PlaygroundRepository;
 import org.example.laboration2backend.user.AppUserRepository;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,7 +20,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,18 +27,16 @@ import java.util.stream.Collectors;
 @Slf4j
 public class InfoController {
 
-    private final ApiKeyAuthService apiKeyAuthService;
     PlaceService placeService;
     CategoryService categoryService;
     PlaygroundRepository playgroundRepository;
      AppUserRepository appUserRepository;
 
     public InfoController(CategoryService categoryService, PlaceService placeService,
-                          ApiKeyAuthService apiKeyAuthService, AppUserRepository appUserRepository) {
+                           AppUserRepository appUserRepository) {
 
         this.categoryService = categoryService;
         this.placeService = placeService;
-        this.apiKeyAuthService = apiKeyAuthService;
         this.appUserRepository = appUserRepository;
     }
 
@@ -62,22 +59,29 @@ public class InfoController {
     }
     // Hämta alla platser (både publika och privata) som tillhör den inloggade användaren.
     @GetMapping("/places/user")
-   public List<PlaceDto> getMyPlaces() {
+    public List<PlaceDto> getMyPlaces() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username;
-        if (authentication.getPrincipal() instanceof UserDetails) {
+
+        if (authentication.getPrincipal() instanceof Jwt) {
+            Jwt jwt = (Jwt) authentication.getPrincipal();
+            username = jwt.getClaim("sub");
+        } else if (authentication.getPrincipal() instanceof UserDetails) {
             username = ((UserDetails) authentication.getPrincipal()).getUsername();
         } else {
-            username = authentication.getPrincipal().toString(); }
+            username = authentication.getPrincipal().toString();
+        }
+
         AppUser appUser = appUserRepository.findByUsername(username);
         if (appUser == null) {
             throw new UsernameNotFoundException("User not found");
         }
+
         int userId = appUser.getId();
-         log.info("userId is: " + userId);
+        log.info("userId is: " + userId);
         List<Place> places = placeService.getPlacesByUserId(userId);
         return places.stream().map(PlaceDto::fromPlace).toList();
-}
+    }
 
     //Hämta alla publika platser eller en specifik publik plats (för anonyma användare).
     @GetMapping("/place")
@@ -105,19 +109,29 @@ public class InfoController {
     }
 
     @PutMapping("/place/{placeId}")
-    public ResponseEntity<Void> updatePlace(@PathVariable Integer placeId, @RequestBody PlaceDto placeDto){
-        try {
-            placeService.updatePlace(placeId, placeDto);
-            return ResponseEntity.noContent().build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.notFound().build();
-        } catch (SecurityException e) {
-            return ResponseEntity.status(403).build();
-        } catch (Exception e) {
-            return ResponseEntity.status(500).build();
-        }
-    }
+    public ResponseEntity<Void> updatePlace(@PathVariable Integer placeId, @RequestBody PlaceDto placeDto) {
 
+            try {
+                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+                String username;
+
+                if (authentication.getPrincipal() instanceof Jwt) {
+                    Jwt jwt = (Jwt) authentication.getPrincipal();
+                    username = jwt.getClaim("sub");
+                } else {
+                    username = authentication.getPrincipal().toString();
+                }
+
+                placeService.updatePlace(placeId, placeDto, username);
+                return ResponseEntity.noContent().build();
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.notFound().build();
+            } catch (SecurityException e) {
+                return ResponseEntity.status(403).build();
+            } catch (Exception e) {
+                return ResponseEntity.status(500).build();
+            }
+        }
 
     @GetMapping("/place/active")
     public List<PlaceDto> publicActivePlaces(){
@@ -136,16 +150,25 @@ public class InfoController {
     @DeleteMapping("/place/{placeId}")
     public ResponseEntity<Void> deletePlace(@PathVariable Integer placeId) {
         try {
-            placeService.deletePlace(placeId);
+
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String username;
+
+            if (authentication.getPrincipal() instanceof Jwt) {
+                Jwt jwt = (Jwt) authentication.getPrincipal();
+                username = jwt.getClaim("sub");
+            } else {
+                username = authentication.getPrincipal().toString();
+            }
+
+            placeService.deletePlace(placeId, username);
             return ResponseEntity.noContent().build();
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error("Unexpected error occurred while deleting place with id {}", placeId, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    @GetMapping("/api/test")
-    @PreAuthorize("hasAuthority('read:test')")
-    public Collection<ApiKey> test(){
-         return apiKeyAuthService.getMyApiKeys();
-    }
 }

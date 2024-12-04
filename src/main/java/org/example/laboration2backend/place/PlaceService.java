@@ -93,7 +93,7 @@ public List<Place> getPlacesByUserId(int userId) {
         return placeRepository.findAllInactivePlaces();
     }
 
-    public void updatePlace(int placeId, PlaceDto placeDto) {
+    public void updatePlace(int placeId, PlaceDto placeDto, String username) {
         Place place = placeRepository.findById(placeId)
                 .orElseThrow(() -> new IllegalArgumentException("Place not found for ID: " + placeId));
 
@@ -113,19 +113,22 @@ public List<Place> getPlacesByUserId(int userId) {
                 findById(placeDto.playgroundId()) .orElse(null);
         place.setPlayground(playground);
         placeRepository.save(place);
+        log.info("Place with id {} has been updated by {}", placeId, username);
     }
 
-    @Transactional
-    public void deletePlace(Integer placeId) throws ResourceNotFoundException {
-        // Only records with Deleted file is false are included
-        Place place = placeRepository.findActiveById(placeId) .orElseThrow(()
-                -> new ResourceNotFoundException("Place not found with id: " + placeId));
+         @Transactional
+        public void deletePlace(Integer placeId, String username) throws ResourceNotFoundException {
+            // Only records with Deleted flag set to false are included
+            Place place = placeRepository.findActiveById(placeId).orElseThrow(
+                    () -> new ResourceNotFoundException("Place not found with id: " + placeId));
 
-        checkUserAuthorization.checkUserAuthorization(place.getAppUser());
+            checkUserAuthorization.checkUserAuthorization(place.getAppUser());
 
-        place.setDeleted(true);
-        placeRepository.save(place);
-        log.info("Place with id {} has been marked as deleted", placeId);
+            place.setDeleted(true);
+            placeRepository.save(place);
+            log.info("Place with id {} has been marked as deleted by {}", placeId, username);
+        }
     }
 
-}
+
+

@@ -1,8 +1,10 @@
 package org.example.laboration2backend.security;
 
 import org.example.laboration2backend.entity.AppUser;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
@@ -11,25 +13,22 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CheckUserAuthorization {
 
-    public void checkUserAuthorization(AppUser appUser) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String currentUsername;
-        if (principal instanceof UserDetails) {
-            currentUsername = ((UserDetails) principal).getUsername();
-        } else {
-            currentUsername = principal.toString();
-        }
+        public void checkUserAuthorization(AppUser appUser) {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String username;
 
-//        String placeOwner = "user" + place.getUserId();
-        String placeOwner = appUser.getUsername();
-        boolean isAdmin = SecurityContextHolder.getContext().getAuthentication()
-                .getAuthorities().stream()
-                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
+            if (authentication.getPrincipal() instanceof Jwt) {
+                Jwt jwt = (Jwt) authentication.getPrincipal();
+                username = jwt.getClaim("sub");
+            } else if (authentication.getPrincipal() instanceof UserDetails) {
+                username = ((UserDetails) authentication.getPrincipal()).getUsername();
+            } else {
+                username = authentication.getPrincipal().toString();
+            }
 
-        log.debug("Place owner: {}, Current user: {}, Is admin: {}", placeOwner, currentUsername, isAdmin);
-
-        if (!isAdmin && !placeOwner.equals(currentUsername)) {
-            throw new SecurityException("Unauthorized to update or delete this place");
+            if (!appUser.getUsername().equals(username)) {
+                throw new SecurityException("Unauthorized to update or delete this place");
+            }
         }
     }
-}
+
